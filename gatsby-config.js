@@ -15,7 +15,6 @@ module.exports = {
           path: '/',
           component: require.resolve('./src/templates/page.js')
         }]
-
       }
     },
     `gatsby-plugin-react-helmet`,
