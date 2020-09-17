@@ -15,6 +15,7 @@ const navigationQuery = graphql`
     allNavigations {
       edges {
         node {
+          branding
           navigation_links {
             link {
               ... on PRISMIC_Page {
@@ -31,25 +32,74 @@ const navigationQuery = graphql`
   }
 }`
 
-const NavLink = styled.div``;
+
+const Header = styled.header`
+display: flex;
+background: black;
+height: 66px;
+padding: 0 16px;
+box-sizing: border-box;
+`;
+
+const NavLinks = styled.div`
+  margin-left: auto;
+  display: flex;
+`;
+
+const NavLink = styled.div`
+  margin: auto 0;
+
+  a{
+    color: white;
+    padding: 0 16px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 16px;
+
+    &:hover{
+      color: orange;
+    }
+  }
+`;
+
+const Branding = styled.div`
+  color: orange;
+  font-weight: bold;
+  margin: auto 0;
+  font-size: 20px;
+`;
+
 
 const Layout = ({ children }) => {
   return (
     <div>
-        <StaticQuery 
-          query={`${navigationQuery}`}
-          render={(data) => {
-            console.log(data)
-            return data.prismic.allNavigations.edges[0].node.navigation_links.map((link) => {
-              return <NavLink key={link.link._meta.uid}>
-                <Link to={`/${link.link._meta.uid}`}>
-                  {link.label}
-                </Link>
-              </NavLink>
-            })
-          }} 
-        />
-        <Main>{children}</Main>
+      <Header>
+          <StaticQuery 
+            query={`${navigationQuery}`}
+            render={(data) => {
+              console.log(data)
+              return (
+                <>
+                  <Branding>
+                    {data.prismic.allNavigations.edges[0].node.branding}
+                  </Branding>
+                  <NavLinks>
+                    {data.prismic.allNavigations.edges[0].node.navigation_links.map((link) => {
+                      return (
+                        <NavLink key={link.link._meta.uid}>
+                          <Link to={`/${link.link._meta.uid}`}>
+                            {link.label}
+                          </Link>
+                        </NavLink>
+                      )
+                    })}
+                  </NavLinks>
+                </>
+              )
+            }}
+          />
+      </Header>
+      <Main>{children}</Main>
     </div>
   )
 }
