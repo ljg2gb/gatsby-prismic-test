@@ -1,5 +1,6 @@
 import React from 'react';
 import { graphql } from 'gatsby';
+import { RichText } from 'prismic-reactjs';
 
 export const query = graphql`
 query PageQuery($id: String){
@@ -7,24 +8,28 @@ query PageQuery($id: String){
       allPages(id: $id) {
         edges {
           node {
-                title
             _meta {
               id
               uid
             }
+            page_title
+            content
           }
         }
       }
     }
-  }
-`
+  }`
 
 const Page = (props) => {
     console.log(props)
+    const data = props.data.prismic.allPages.edges[0].node
+    const pageTitle = data.page_title
+    const content = data.content
     return (
-        <h1>
-            Page
-        </h1>
+        <div>
+            <RichText render={pageTitle} />
+            <RichText render={content} />
+        </div>
     )
 }
 
